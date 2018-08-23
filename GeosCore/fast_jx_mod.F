@@ -5247,17 +5247,15 @@ C---Always does PL(2) = P[1]
 
       ! For all mechanisms. Set the photolysis rate of NITs and NIT to a
       ! scaled value of JHNO3. NOTE: this is set in HEMCO_Config.rc 
-!      IF ( Input_Opt%hvAerNIT ) THEN
-      IF ( .TRUE. ) THEN
+      IF ( Input_Opt%hvAerNIT ) THEN
 
          ! check the input swtitches
          WRITE( *, *) Input_Opt%hvAerNIT
          WRITE( *, *) Input_Opt%hvAerNIT_JNIT
          WRITE( *, *) Input_Opt%hvAerNIT_JNITs
-         
-         ! Get the photolysis scalars read in by HEMCO
-         JscaleNITs = 100
-         JscaleNIT  = 100
+         ! Get the photolysis scalars read in from input.geos
+         JscaleNITs = hvAerNIT_JNITs_JNITs
+         JscaleNIT  = Input_Opt%hvAerNIT_JNIT
          ! Set the photolysis rate of NIT
          ZPJ(L,RXN_JNITa,I,J) = ZPJ(L,RXN_JHNO3,I,J) * JscaleNIT
          ZPJ(L,RXN_JNITb,I,J) = ZPJ(L,RXN_JHNO3,I,J) * JscaleNIT
