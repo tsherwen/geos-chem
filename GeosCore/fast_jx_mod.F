@@ -3015,11 +3015,11 @@ c---Zero / Set index arrays that map Jvalue(j) onto rates
                RXN_N2O = K
 
             ! NITs + hv -> HNO2
-            CASE( 'NITSPHOTONHNO2' )
+            CASE( 'NITsPHOTONHNO2' )
                RXN_JNITSa = K
                WRITE(*,*) 'FOUND NITsPHOTONHNO2, ', K
             ! NITs + hv -> NO2
-            CASE( 'NITSPHOTONNO2' )
+            CASE( 'NITsPHOTONNO2' )
                RXN_JNITSb = K
                WRITE(*,*) 'FOUND NITsPHOTONNO2, ', K
             ! NIT + hv -> HNO2
@@ -3031,9 +3031,9 @@ c---Zero / Set index arrays that map Jvalue(j) onto rates
                RXN_JNITb = K
                WRITE(*,*) 'FOUND NITPHOTONNO2, ', K
             ! HNO3 + hv = OH + NO2
-            CASE( 'HNO3PHOTONOHNO2' )
+            CASE( 'HNO3PHOTONNO2OH' )
                RXN_JHNO3 = K
-               WRITE(*,*) 'FOUND HNO3PHOTONOHNO2, ', K
+               WRITE(*,*) 'FOUND HNO3PHOTONNO2OH, ', K
 
             CASE DEFAULT
                ! Nothing
@@ -5254,7 +5254,7 @@ C---Always does PL(2) = P[1]
          WRITE( *, *) Input_Opt%hvAerNIT_JNIT
          WRITE( *, *) Input_Opt%hvAerNIT_JNITs
          ! Get the photolysis scalars read in from input.geos
-         JscaleNITs = hvAerNIT_JNITs_JNITs
+         JscaleNITs = Input_Opt%hvAerNIT_JNITs
          JscaleNIT  = Input_Opt%hvAerNIT_JNIT
          ! Set the photolysis rate of NIT
          ZPJ(L,RXN_JNITa,I,J) = ZPJ(L,RXN_JHNO3,I,J) * JscaleNIT
