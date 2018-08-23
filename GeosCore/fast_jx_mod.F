@@ -75,6 +75,12 @@
       INTEGER, PUBLIC :: RXN_H2SO4 = -1   ! SO4 + hv --> SO2 + 2OH
       INTEGER, PUBLIC :: RXN_NO2   = -1   ! NO2 + hv --> NO  + O
 
+      INTEGER, PUBLIC :: RXN_JNITa  = -1   ! NITs + hv --> HNO2
+      INTEGER, PUBLIC :: RXN_JNITb  = -1   ! NITs + hv --> NO2
+      INTEGER, PUBLIC :: RXN_JNITSa = -1   ! NIT  + hv --> HNO2
+      INTEGER, PUBLIC :: RXN_JNITSb = -1   ! NIT  + hv --> NO2
+      INTEGER, PUBLIC :: RXN_JHNO3  = -1   ! HNO3 + hv --> OH + NO2
+
       ! Needed for UCX_MOD
       INTEGER, PUBLIC :: RXN_NO    = -1
       INTEGER, PUBLIC :: RXN_NO3   = -1
@@ -84,7 +90,10 @@
       INTEGER :: id_CH2IBr, id_IBr,  id_CH2ICl, id_ICl,   id_I2
       INTEGER :: id_HOI,    id_IO,   id_OIO,    id_INO,   id_IONO
       INTEGER :: id_IONO2,  id_I2O2, id_CH3I,   id_CH2I2, id_I2O4
-      INTEGER :: id_I2O3
+      INTEGER :: id_I2O3 
+
+      ! Needed for scaling JNIT/JNITs photolysis to JHNO3
+      INTEGER :: JscaleNITs, JscaleNIT
 
 #if defined( MODEL_GEOS )
       ! Diagnostics arrays (ckeller, 5/22/18) 
@@ -2960,6 +2969,8 @@ c---Zero / Set index arrays that map Jvalue(j) onto rates
          TEXT = JLABEL(K)
          CALL CSTRIP( TEXT )
 
+         WRITE(*,*) K, TRIM( TEXT )
+
          ! Look for certain reactions
          SELECT CASE( TRIM( TEXT ) )
          
@@ -3003,6 +3014,27 @@ c---Zero / Set index arrays that map Jvalue(j) onto rates
             CASE( 'N2OPHOTONN2O' )
                RXN_N2O = K
 
+            ! NITs + hv -> HNO2
+            CASE( 'NITSPHOTONHNO2' )
+               RXN_JNITSa = K
+               WRITE(*,*) 'FOUND NITsPHOTONHNO2, ', K
+            ! NITs + hv -> NO2
+            CASE( 'NITSPHOTONNO2' )
+               RXN_JNITSb = K
+               WRITE(*,*) 'FOUND NITsPHOTONNO2, ', K
+            ! NIT + hv -> HNO2
+            CASE( 'NITPHOTONHNO2' )
+               RXN_JNITa = K
+               WRITE(*,*) 'FOUND NITPHOTONHNO2, ', K
+            ! NIT + hv -> NO2
+            CASE( 'NITPHOTONNO2' )
+               RXN_JNITb = K
+               WRITE(*,*) 'FOUND NITPHOTONNO2, ', K
+            ! HNO3 + hv = OH + NO2
+            CASE( 'HNO3PHOTONOHNO2' )
+               RXN_JHNO3 = K
+               WRITE(*,*) 'FOUND HNO3PHOTONOHNO2, ', K
+
             CASE DEFAULT
                ! Nothing
          END SELECT
@@ -3036,6 +3068,36 @@ c---Zero / Set index arrays that map Jvalue(j) onto rates
 
       IF ( RXN_NO2 < 0 ) THEN
          ErrMsg = 'Could not find rxn NO2 + hv -> NO + O'
+         CALL GC_Error( ErrMsg, RC, ThisLoc )
+         RETURN
+      ENDIF
+
+      IF ( RXN_NO2 < 0 ) THEN
+         ErrMsg = 'Could not find rxn NO2 + hv -> NO + O'
+         CALL GC_Error( ErrMsg, RC, ThisLoc )
+         RETURN
+      ENDIF
+
+      IF ( RXN_JNITSa < 0 ) THEN
+         ErrMsg = 'Could not find rxn NITS + hv -> HNO2'
+         CALL GC_Error( ErrMsg, RC, ThisLoc )
+         RETURN
+      ENDIF
+
+      IF ( RXN_JNITSb < 0 ) THEN
+         ErrMsg = 'Could not find rxn NITS + hv -> NO2'
+         CALL GC_Error( ErrMsg, RC, ThisLoc )
+         RETURN
+      ENDIF
+
+      IF ( RXN_JNITa < 0 ) THEN
+         ErrMsg = 'Could not find rxn NIT + hv -> HNO2'
+         CALL GC_Error( ErrMsg, RC, ThisLoc )
+         RETURN
+      ENDIF
+
+      IF ( RXN_JNITb < 0 ) THEN
+         ErrMsg = 'Could not find rxn NIT + hv -> NO2'
          CALL GC_Error( ErrMsg, RC, ThisLoc )
          RETURN
       ENDIF
@@ -3081,6 +3143,10 @@ c---Zero / Set index arrays that map Jvalue(j) onto rates
          WRITE( 6, 130 ) RXN_O3_1
          WRITE( 6, 140 ) RXN_O3_2a
          WRITE( 6, 150 ) RXN_O3_2b
+         WRITE( 6, 180 ) RXN_JNITSa
+         WRITE( 6, 190 ) RXN_JNITSb
+         WRITE( 6, 200 ) RXN_JNITa
+         WRITE( 6, 210 ) RXN_JNITb  
          IF ( Input_Opt%LUCX ) THEN
          WRITE( 6, 160 ) RXN_H2SO4
          ENDIF
@@ -3097,7 +3163,11 @@ c---Zero / Set index arrays that map Jvalue(j) onto rates
  150  FORMAT( 'RXN_O3_2b [ O3  + hv -> O2 + O(1D) #2 ]  =  ', i5 )
  160  FORMAT( 'RXN_H2SO4 [ SO4 + hv -> SO2 + OH + OH ]  =  ', i5 )
  170  FORMAT( 'RXN_NO2   [ NO2 + hv -> NO + O        ]  =  ', i5 )
-      
+ 180  FORMAT( 'RXN_JNITSa [ NITS + hv -> HNO2        ]  =  ', i5 )
+ 190  FORMAT( 'RXN_JNITSb [ NITS + hv -> NO2         ]  =  ', i5 )
+ 200  FORMAT( 'RXN_JNITa  [ NIT + hv -> HNO2         ]  =  ', i5 )
+ 210  FORMAT( 'RXN_JNITb  [ NIT + hv -> NO2          ]  =  ', i5 )
+
       END SUBROUTINE RD_JS_JX
 !EOC
 !------------------------------------------------------------------------------
@@ -5173,6 +5243,29 @@ C---Always does PL(2) = P[1]
 #if defined( BPCH_DIAG )
       Do_ND22 = ( ND22 > 0 .and. L <= LD22 .and. LTJV(I,J) > 0 ) 
 #endif
+
+
+      ! For all mechanisms. Set the photolysis rate of NITs and NIT to a
+      ! scaled value of JHNO3. NOTE: this is set in HEMCO_Config.rc 
+!      IF ( Input_Opt%hvAerNIT ) THEN
+      IF ( .TRUE. ) THEN
+
+         ! check the input swtitches
+         WRITE( *, *) Input_Opt%hvAerNIT
+         WRITE( *, *) Input_Opt%hvAerNIT_JNIT
+         WRITE( *, *) Input_Opt%hvAerNIT_JNITs
+         
+         ! Get the photolysis scalars read in by HEMCO
+         JscaleNITs = 100
+         JscaleNIT  = 100
+         ! Set the photolysis rate of NIT
+         ZPJ(L,RXN_JNITa,I,J) = ZPJ(L,RXN_JHNO3,I,J) * JscaleNIT
+         ZPJ(L,RXN_JNITb,I,J) = ZPJ(L,RXN_JHNO3,I,J) * JscaleNIT
+         ! Set the photolysis rate of NITs
+         ZPJ(L,RXN_JNITSa,I,J) = ZPJ(L,RXN_JHNO3,I,J) * JscaleNITs
+         ZPJ(L,RXN_JNITSb,I,J) = ZPJ(L,RXN_JHNO3,I,J) * JscaleNITs
+
+      ENDIF
 
       ! Test if the UCX mechanism is being used
       IF ( Input_Opt%LUCX ) THEN

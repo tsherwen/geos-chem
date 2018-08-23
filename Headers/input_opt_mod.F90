@@ -131,7 +131,10 @@ MODULE Input_Opt_Mod
      LOGICAL                     :: LBCAE
      REAL(fp)                    :: BCAE_1
      REAL(fp)                    :: BCAE_2
-
+     ! for nitrate aerosol photolysis (TMS, 23/08/2018)
+     LOGICAL                     :: hvAerNIT
+     REAL(fp)                    :: hvAerNIT_JNIT
+     REAL(fp)                    :: hvAerNIT_JNITs
      !----------------------------------------
      ! EMISSIONS MENU fields
      !----------------------------------------
@@ -823,6 +826,9 @@ CONTAINS
     Input_Opt%P_ICE_SUPERSAT         = 0e+0_fp
     Input_Opt%LPSCCHEM               = .FALSE.
     Input_Opt%LSTRATOD               = .FALSE.
+    Input_Opt%hvAerNIT               = .FALSE.
+    Input_Opt%hvAerNIT_JNIT          = 0e+0_fp
+    Input_Opt%hvAerNIT_JNITs         = 0e+0_fp
 
     !----------------------------------------
     ! EMISSIONS MENU fields
