@@ -135,6 +135,8 @@ MODULE Input_Opt_Mod
      LOGICAL                     :: hvAerNIT
      REAL(fp)                    :: hvAerNIT_JNIT
      REAL(fp)                    :: hvAerNIT_JNITs
+     REAL(fp)                    :: JNITChanA
+     REAL(fp)                    :: JNITChanB
      !----------------------------------------
      ! EMISSIONS MENU fields
      !----------------------------------------
@@ -829,6 +831,8 @@ CONTAINS
     Input_Opt%hvAerNIT               = .FALSE.
     Input_Opt%hvAerNIT_JNIT          = 0e+0_fp
     Input_Opt%hvAerNIT_JNITs         = 0e+0_fp
+    Input_Opt%JNITChanA              = 0e+0_fp
+    Input_Opt%JNITChanB              = 0e+0_fp
 
     !----------------------------------------
     ! EMISSIONS MENU fields

@@ -93,7 +93,7 @@
       INTEGER :: id_I2O3 
 
       ! Needed for scaling JNIT/JNITs photolysis to JHNO3
-      REAL(fp)      :: JscaleNITs, JscaleNIT
+      REAL(fp)      :: JscaleNITs, JscaleNIT, JNITChanA, JNITChanB
 
 #if defined( MODEL_GEOS )
       ! Diagnostics arrays (ckeller, 5/22/18) 
@@ -3017,23 +3017,23 @@ c---Zero / Set index arrays that map Jvalue(j) onto rates
             ! NITs + hv -> HNO2
             CASE( 'NITsPHOTONHNO2' )
                RXN_JNITSa = K
-               WRITE(*,*) 'FOUND NITsPHOTONHNO2, ', K
+!               WRITE(*,*) 'FOUND NITsPHOTONHNO2, ', K
             ! NITs + hv -> NO2
             CASE( 'NITsPHOTONNO2' )
                RXN_JNITSb = K
-               WRITE(*,*) 'FOUND NITsPHOTONNO2, ', K
+!               WRITE(*,*) 'FOUND NITsPHOTONNO2, ', K
             ! NIT + hv -> HNO2
             CASE( 'NITPHOTONHNO2' )
                RXN_JNITa = K
-               WRITE(*,*) 'FOUND NITPHOTONHNO2, ', K
+!               WRITE(*,*) 'FOUND NITPHOTONHNO2, ', K
             ! NIT + hv -> NO2
             CASE( 'NITPHOTONNO2' )
                RXN_JNITb = K
-               WRITE(*,*) 'FOUND NITPHOTONNO2, ', K
+!               WRITE(*,*) 'FOUND NITPHOTONNO2, ', K
             ! HNO3 + hv = OH + NO2
             CASE( 'HNO3PHOTONNO2OH' )
                RXN_JHNO3 = K
-               WRITE(*,*) 'FOUND HNO3PHOTONNO2OH, ', K
+!               WRITE(*,*) 'FOUND HNO3PHOTONNO2OH, ', K
 
             CASE DEFAULT
                ! Nothing
@@ -3708,6 +3708,8 @@ C-----------------------------------------------------------------------
                ! are handled in routine PHOTRATE_ADJ
                ! Hardcode ZPJ indices based on valued from FJX_j2j.dat
                ! for now (mps, 3/15/16)
+               ! TMS (18/10/10) - IDs 77, 78 (JNIT, JNITs) 
+               ! also handled in routine PHOTRATE_ADJ
                AD22(ILON,ILAT,L, 1) = AD22(ILON,ILAT,L, 1) +  ! JNO2
      &                                ZPJ(L,11,ILON,ILAT)
                AD22(ILON,ILAT,L, 2) = AD22(ILON,ILAT,L, 2) +  ! JHNO3
@@ -3867,12 +3869,6 @@ C-----------------------------------------------------------------------
      &                                ZPJ(L,53,ILON,ILAT)
                AD22(ILON,ILAT,L,76) = AD22(ILON,ILAT,L,76) +  ! JH2402
      &                                ZPJ(L,54,ILON,ILAT)
-               AD22(ILON,ILAT,L,77) = AD22(ILON,ILAT,L,77) +  ! JNIT
-     &                                ZPJ(L,131,ILON,ILAT) +
-     &                                ZPJ(L,132,ILON,ILAT)
-               AD22(ILON,ILAT,L,78) = AD22(ILON,ILAT,L,78) +  ! JNITs
-     &                                ZPJ(L,133,ILON,ILAT) +
-     &                                ZPJ(L,134,ILON,ILAT)
                ENDIF ! IS_HALOGENS
             ENDDO
 
@@ -5252,22 +5248,38 @@ C---Always does PL(2) = P[1]
 
 
       ! For all mechanisms. Set the photolysis rate of NITs and NIT to a
-      ! scaled value of JHNO3. NOTE: this is set in HEMCO_Config.rc 
+      ! scaled value of JHNO3. NOTE: this is set in input.geos
       IF ( Input_Opt%hvAerNIT ) THEN
 
-         ! check the input swtitches
-         WRITE( *, *) Input_Opt%hvAerNIT
-         WRITE( *, *) Input_Opt%hvAerNIT_JNIT
-         WRITE( *, *) Input_Opt%hvAerNIT_JNITs
          ! Get the photolysis scalars read in from input.geos
          JscaleNITs = Input_Opt%hvAerNIT_JNITs
          JscaleNIT  = Input_Opt%hvAerNIT_JNIT
+         JNITChanA  = Input_Opt%JNITChanA
+         JNITChanB  = Input_Opt%JNITChanB
+         ! check the input swtitches
+!         WRITE( *, *) 'TMS check - channel', JNITChanA, JNITChanB
+!         WRITE( *, *) 'TMS check - Jscale', JscaleNITs, JscaleNIT         
+!         WRITE( *, *) 'TMS check - before HNO3', ZPJ(L,RXN_JHNO3,I,J)
+!         WRITE( *, *) 'TMS check - before NITsa', ZPJ(L,RXN_JNITSa,I,J)
+!         WRITE( *, *) 'TMS check - before NITsb', ZPJ(L,RXN_JNITSb,I,J)
+!         WRITE( *, *) 'TMS check - before NITa', ZPJ(L,RXN_JNITa,I,J)
+!         WRITE( *, *) 'TMS check - before NITb', ZPJ(L,RXN_JNITb,I,J)
          ! Set the photolysis rate of NIT
          ZPJ(L,RXN_JNITa,I,J) = ZPJ(L,RXN_JHNO3,I,J) * JscaleNIT
          ZPJ(L,RXN_JNITb,I,J) = ZPJ(L,RXN_JHNO3,I,J) * JscaleNIT
          ! Set the photolysis rate of NITs
-         ZPJ(L,RXN_JNITSa,I,J) = ZPJ(L,RXN_JHNO3,I,J) * JscaleNITs
+         ZPJ(L,RXN_JNITSa,I,J) = ZPJ(L,RXN_JHNO3,I,J) * JscaleNITs 
          ZPJ(L,RXN_JNITSb,I,J) = ZPJ(L,RXN_JHNO3,I,J) * JscaleNITs
+         ! Adjust to scaling for channels set in input.geos
+         ! NOTE: channel scaling is 1 in FJX_j2j.dat, then updated here     
+         ZPJ(L,RXN_JNITSa,I,J) = ZPJ(L,RXN_JNITSa,I,J) * JNITChanA
+         ZPJ(L,RXN_JNITa,I,J) = ZPJ(L,RXN_JNITa,I,J) * JNITChanA
+         ZPJ(L,RXN_JNITSb,I,J) = ZPJ(L,RXN_JNITSb,I,J) * JNITChanB
+         ZPJ(L,RXN_JNITb,I,J) = ZPJ(L,RXN_JNITb,I,J) * JNITChanB
+!         WRITE( *, *) 'TMS check - after NITsa', ZPJ(L,RXN_JNITSa,I,J)
+!         WRITE( *, *) 'TMS check - after NITsb', ZPJ(L,RXN_JNITSb,I,J)
+!         WRITE( *, *) 'TMS check - after NITa', ZPJ(L,RXN_JNITa,I,J)
+!         WRITE( *, *) 'TMS check - after NITb', ZPJ(L,RXN_JNITb,I,J)
 
       ENDIF
 
@@ -5436,6 +5448,23 @@ C---Always does PL(2) = P[1]
 #endif
 
       ENDIF
+
+#if defined( BPCH_DIAG )
+      !--------------------------------------------------------------
+      ! ND22 (bpch) diagnostic
+      !
+      ! Store JNIT and JNITs
+      !--------------------------------------------------------------
+      IF ( Do_ND22 ) THEN
+
+         AD22(I,J,L,77) = AD22(I,J,L,77) +  ! JNIT
+     &                          ZPJ(L,RXN_JNITSa,I,J) +
+     &                          ZPJ(L,RXN_JNITSb,I,J)
+         AD22(I,J,L,78) = AD22(I,J,L,78) +  ! JNITs
+     &                          ZPJ(L,RXN_JNITa,I,J) +
+     &                          ZPJ(L,RXN_JNITb,I,J)
+      ENDIF
+#endif
       
       END SUBROUTINE PHOTRATE_ADJ
 !EOC
