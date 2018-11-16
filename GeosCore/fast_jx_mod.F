@@ -5256,14 +5256,6 @@ C---Always does PL(2) = P[1]
          JscaleNIT  = Input_Opt%hvAerNIT_JNIT
          JNITChanA  = Input_Opt%JNITChanA
          JNITChanB  = Input_Opt%JNITChanB
-         ! check the input swtitches
-!         WRITE( *, *) 'TMS check - channel', JNITChanA, JNITChanB
-!         WRITE( *, *) 'TMS check - Jscale', JscaleNITs, JscaleNIT         
-!         WRITE( *, *) 'TMS check - before HNO3', ZPJ(L,RXN_JHNO3,I,J)
-!         WRITE( *, *) 'TMS check - before NITsa', ZPJ(L,RXN_JNITSa,I,J)
-!         WRITE( *, *) 'TMS check - before NITsb', ZPJ(L,RXN_JNITSb,I,J)
-!         WRITE( *, *) 'TMS check - before NITa', ZPJ(L,RXN_JNITa,I,J)
-!         WRITE( *, *) 'TMS check - before NITb', ZPJ(L,RXN_JNITb,I,J)
          ! Set the photolysis rate of NIT
          ZPJ(L,RXN_JNITa,I,J) = ZPJ(L,RXN_JHNO3,I,J) * JscaleNIT
          ZPJ(L,RXN_JNITb,I,J) = ZPJ(L,RXN_JHNO3,I,J) * JscaleNIT
@@ -5276,10 +5268,15 @@ C---Always does PL(2) = P[1]
          ZPJ(L,RXN_JNITa,I,J) = ZPJ(L,RXN_JNITa,I,J) * JNITChanA
          ZPJ(L,RXN_JNITSb,I,J) = ZPJ(L,RXN_JNITSb,I,J) * JNITChanB
          ZPJ(L,RXN_JNITb,I,J) = ZPJ(L,RXN_JNITb,I,J) * JNITChanB
-!         WRITE( *, *) 'TMS check - after NITsa', ZPJ(L,RXN_JNITSa,I,J)
-!         WRITE( *, *) 'TMS check - after NITsb', ZPJ(L,RXN_JNITSb,I,J)
-!         WRITE( *, *) 'TMS check - after NITa', ZPJ(L,RXN_JNITa,I,J)
-!         WRITE( *, *) 'TMS check - after NITb', ZPJ(L,RXN_JNITb,I,J)
+
+      ! Gotcha to set JNIT and JNITs to zero if hvAerNIT switch is off
+      ELSE
+         ! Set the photolysis rate of NIT to zero
+         ZPJ(L,RXN_JNITa,I,J) = 0.0_fp 
+         ZPJ(L,RXN_JNITb,I,J) = 0.0_fp
+         ! Set the photolysis rate of NITs to zero
+         ZPJ(L,RXN_JNITSa,I,J) = 0.0_fp
+         ZPJ(L,RXN_JNITSb,I,J) = 0.0_fp
 
       ENDIF
 
