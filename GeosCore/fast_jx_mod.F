@@ -5254,8 +5254,9 @@ C---Always does PL(2) = P[1]
          ! Get the photolysis scalars read in from input.geos
          JscaleNITs = Input_Opt%hvAerNIT_JNITs
          JscaleNIT  = Input_Opt%hvAerNIT_JNIT
-         JNITChanA  = Input_Opt%JNITChanA
-         JNITChanB  = Input_Opt%JNITChanB
+         ! convert reaction channel % to a fraction
+         JNITChanA  = Input_Opt%JNITChanA / 100.0_fp
+         JNITChanB  = Input_Opt%JNITChanB / 100.0_fp
          ! Set the photolysis rate of NIT
          ZPJ(L,RXN_JNITa,I,J) = ZPJ(L,RXN_JHNO3,I,J) * JscaleNIT
          ZPJ(L,RXN_JNITb,I,J) = ZPJ(L,RXN_JHNO3,I,J) * JscaleNIT
