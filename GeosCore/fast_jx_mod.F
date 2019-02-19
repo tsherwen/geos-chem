@@ -1828,7 +1828,7 @@ c---check on overflow of arrays, cut off JXTRA at lower L if too many levels
       JXUNIT = findFreeLUN()
 
       ! Define data directory for FAST-JX input
-      DATA_DIR = TRIM( Input_Opt%CHEM_INPUTS_DIR )//'FAST_JX/v2018-09/'
+      DATA_DIR = TRIM( Input_Opt%CHEM_INPUTS_DIR )//'FAST_JX/v2019-02/'
 
       !=====================================================================
       ! Read in fast-J X-sections (spectral data)
@@ -2478,7 +2478,7 @@ c---TROP-QUICK  (must scale solar flux for W=5)
       LBRC = Input_Opt%LBRC
             
       ! Define data directory for FAST-JX input
-      DATA_DIR = TRIM( Input_Opt%CHEM_INPUTS_DIR )//'FAST_JX/v2018-09/'
+      DATA_DIR = TRIM( Input_Opt%CHEM_INPUTS_DIR )//'FAST_JX/v2019-02/'
 
       ! IMPORTANT: aerosol_mod.F and dust_mod.F expect aerosols in this order
       DATA SPECFIL /"so4.dat","soot.dat","org.dat",
