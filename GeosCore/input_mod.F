@@ -1774,14 +1774,6 @@
       ENDIF
       READ( SUBSTRS(1:N), * ) Input_Opt%hvAerNIT
 
-      ! scalar for JHNO3 for photoylsing NIT aerosol (TMS, 23/08/18)
-      CALL SPLIT_ONE_LINE( SUBSTRS, N, 1, 'hvAerNIT_JNIT', RC )
-      IF ( RC /= GC_SUCCESS ) THEN
-         CALL GC_Error( ErrMsg, RC, ThisLoc )
-         RETURN
-      ENDIF
-      READ( SUBSTRS(1:N), * ) Input_Opt%hvAerNIT_JNIT
-
       ! scalar for JHNO3 for photoylsing NITs aerosol (TMS, 23/08/18)
       CALL SPLIT_ONE_LINE( SUBSTRS, N, 1, 'hvAerNIT_JNITs', RC )
       IF ( RC /= GC_SUCCESS ) THEN
@@ -1789,6 +1781,14 @@
          RETURN
       ENDIF
       READ( SUBSTRS(1:N), * ) Input_Opt%hvAerNIT_JNITs
+
+      ! scalar for JHNO3 for photoylsing NIT aerosol (TMS, 23/08/18)
+      CALL SPLIT_ONE_LINE( SUBSTRS, N, 1, 'hvAerNIT_JNIT', RC )
+      IF ( RC /= GC_SUCCESS ) THEN
+         CALL GC_Error( ErrMsg, RC, ThisLoc )
+         RETURN
+      ENDIF
+      READ( SUBSTRS(1:N), * ) Input_Opt%hvAerNIT_JNIT
 
       ! Fraction for JNITS/NIT channel A (HNO2) for NITs photoylsis (TMS, 10/10/18)
       CALL SPLIT_ONE_LINE( SUBSTRS, N, 1, 'JNITChanA', RC )
@@ -1902,13 +1902,13 @@
      &                        Input_Opt%BCAE_2
          WRITE( 6, 100     ) 'Photolyse nitrate aerosol?  : ',
      &                        Input_Opt%hvAerNIT
-         WRITE( 6, 105     ) 'JNIT scaling of JHNO3       : ',
-     &                        Input_Opt%hvAerNIT_JNIT
          WRITE( 6, 105     ) 'JNITs scaling of JHNO3      : ',
      &                        Input_Opt%hvAerNIT_JNITs
+         WRITE( 6, 105     ) 'JNIT scaling of JHNO3       : ',
+     &                        Input_Opt%hvAerNIT_JNIT
          WRITE( 6, 105     ) 'JNIT(s) channel A (HONO)    : ',
      &                        Input_Opt%JNITChanA
-         WRITE( 6, 105     ) 'JNIT(s) channel B (NO2)    : ',
+         WRITE( 6, 105     ) 'JNIT(s) channel B (NO2)     : ',
      &                        Input_Opt%JNITChanB
       ENDIF
 

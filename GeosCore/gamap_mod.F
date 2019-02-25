@@ -5586,9 +5586,9 @@
                   CASE( 76 )
                      NAME(T,22) = 'JH2402'
                   CASE( 77 )
-                     NAME(T,22) = 'JNIT'
-                  CASE( 78 )
                      NAME(T,22) = 'JNITs'
+                  CASE( 78 )
+                     NAME(T,22) = 'JNIT'
                  CASE DEFAULT
                   ! Nothing
                END SELECT

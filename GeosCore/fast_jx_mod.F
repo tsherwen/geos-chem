@@ -5257,11 +5257,11 @@ C---Always does PL(2) = P[1]
          ! convert reaction channel % to a fraction
          JNITChanA  = Input_Opt%JNITChanA
          JNITChanB  = Input_Opt%JNITChanB 
-         WRITE (*,*) 'TMS Check channels (0):', JNITChanA, JNITChanA         
+         WRITE (*,*) 'TMS Check channels (0):', JNITChanA, JNITChanB
          JNITChanA  = JNITChanA / 100.0_fp
          JNITChanB  = JNITChanB / 100.0_fp
          ! debug prints. 
-         WRITE (*,*) 'TMS Check channels:', JNITChanA, JNITChanA
+         WRITE (*,*) 'TMS Check channels:', JNITChanA, JNITChanB
          WRITE (*,*) 'TMS Check Jscales:', JscaleNITs, JscaleNIT
          ! Set the photolysis rate of NIT
          ZPJ(L,RXN_JNITa,I,J) = ZPJ(L,RXN_JHNO3,I,J) * JscaleNIT
@@ -5474,12 +5474,13 @@ C---Always does PL(2) = P[1]
       !--------------------------------------------------------------
       IF ( Do_ND22 ) THEN
 
-         AD22(I,J,L,77) = AD22(I,J,L,77) +  ! JNIT
+         AD22(I,J,L,77) = AD22(I,J,L,77) +  ! JNITs
      &                          ZPJ(L,RXN_JNITSa,I,J) +
      &                          ZPJ(L,RXN_JNITSb,I,J)
-         AD22(I,J,L,78) = AD22(I,J,L,78) +  ! JNITs
+         AD22(I,J,L,78) = AD22(I,J,L,78) +  ! JNIT
      &                          ZPJ(L,RXN_JNITa,I,J) +
      &                          ZPJ(L,RXN_JNITb,I,J)
+
       ENDIF
 #endif
       
