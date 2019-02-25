@@ -5257,12 +5257,8 @@ C---Always does PL(2) = P[1]
          ! convert reaction channel % to a fraction
          JNITChanA  = Input_Opt%JNITChanA
          JNITChanB  = Input_Opt%JNITChanB 
-         WRITE (*,*) 'TMS Check channels (0):', JNITChanA, JNITChanB
          JNITChanA  = JNITChanA / 100.0_fp
          JNITChanB  = JNITChanB / 100.0_fp
-         ! debug prints. 
-         WRITE (*,*) 'TMS Check channels:', JNITChanA, JNITChanB
-         WRITE (*,*) 'TMS Check Jscales:', JscaleNITs, JscaleNIT
          ! Set the photolysis rate of NIT
          ZPJ(L,RXN_JNITa,I,J) = ZPJ(L,RXN_JHNO3,I,J) * JscaleNIT
          ZPJ(L,RXN_JNITb,I,J) = ZPJ(L,RXN_JHNO3,I,J) * JscaleNIT
@@ -5275,11 +5271,6 @@ C---Always does PL(2) = P[1]
          ZPJ(L,RXN_JNITa,I,J) = ZPJ(L,RXN_JNITa,I,J) * JNITChanA
          ZPJ(L,RXN_JNITSb,I,J) = ZPJ(L,RXN_JNITSb,I,J) * JNITChanB
          ZPJ(L,RXN_JNITb,I,J) = ZPJ(L,RXN_JNITb,I,J) * JNITChanB
-         WRITE (*,*) 'TMS Check JHNO3:', ZPJ(L,RXN_JHNO3,I,J)
-         WRITE (*,*) 'TMS Check JNITa:', ZPJ(L,RXN_JNITa,I,J)  
-         WRITE (*,*) 'TMS Check JNITb:', ZPJ(L,RXN_JNITb,I,J) 
-         WRITE (*,*) 'TMS Check JNITSa:', ZPJ(L,RXN_JNITSa,I,J)  
-         WRITE (*,*) 'TMS Check JNITSb:', ZPJ(L,RXN_JNITSb,I,J)
       ! Gotcha to set JNIT and JNITs to zero if hvAerNIT switch is off
       ELSE
          ! Set the photolysis rate of NIT to zero
@@ -5290,15 +5281,6 @@ C---Always does PL(2) = P[1]
          ZPJ(L,RXN_JNITSb,I,J) = 0.0_fp
 
       ENDIF
-      ! debug prints.                                                                                                             
-      WRITE(*,*) 'TMS Check JNIT(s) on?:', Input_Opt%hvAerNIT
-      WRITE (*,*) 'TMS Check II - channels :', JNITChanA, JNITChanA
-      WRITE (*,*) 'TMS Check II - Jscales:', JscaleNITs, JscaleNIT
-      WRITE (*,*) 'TMS Check II - JHNO3:', ZPJ(L,RXN_JHNO3,I,J)
-      WRITE (*,*) 'TMS Check II - JNITa:', ZPJ(L,RXN_JNITa,I,J)
-      WRITE (*,*) 'TMS Check II - JNITb:', ZPJ(L,RXN_JNITb,I,J)
-      WRITE (*,*) 'TMS Check II - JNITSa:', ZPJ(L,RXN_JNITSa,I,J)
-      WRITE (*,*) 'TMS Check II - JNITSb:', ZPJ(L,RXN_JNITSb,I,J)
 
       ! Test if the UCX mechanism is being used
       IF ( Input_Opt%LUCX ) THEN
