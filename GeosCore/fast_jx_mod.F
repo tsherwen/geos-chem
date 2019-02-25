@@ -5255,8 +5255,11 @@ C---Always does PL(2) = P[1]
          JscaleNITs = Input_Opt%hvAerNIT_JNITs
          JscaleNIT  = Input_Opt%hvAerNIT_JNIT
          ! convert reaction channel % to a fraction
-         JNITChanA  = Input_Opt%JNITChanA / 100.0_fp
-         JNITChanB  = Input_Opt%JNITChanB / 100.0_fp
+         JNITChanA  = Input_Opt%JNITChanA
+         JNITChanB  = Input_Opt%JNITChanB 
+         WRITE (*,*) 'TMS Check channels (0):', JNITChanA, JNITChanA         
+         JNITChanA  = JNITChanA / 100.0_fp
+         JNITChanB  = JNITChanB / 100.0_fp
          ! debug prints. 
          WRITE (*,*) 'TMS Check channels:', JNITChanA, JNITChanA
          WRITE (*,*) 'TMS Check Jscales:', JscaleNITs, JscaleNIT
