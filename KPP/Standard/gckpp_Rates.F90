@@ -13,7 +13,7 @@
 !        R. Sander, Max-Planck Institute for Chemistry, Mainz, Germany
 ! 
 ! File                 : gckpp_Rates.f90
-! Time                 : Tue Feb 19 16:16:29 2019
+! Time                 : Fri Mar  8 16:08:23 2019
 ! Working directory    : /work/home/ts551/GEOSChem/geos-chem_FORKED_PUBLIC/KPP/Standard
 ! Equation file        : gckpp.kpp
 ! Output root filename : gckpp
@@ -1208,10 +1208,10 @@ SUBROUTINE Update_RCONST ( )
   RCONST(723) = (PHOTOL(112))
   RCONST(724) = (PHOTOL(113))
   RCONST(725) = (PHOTOL(114))
-  RCONST(726) = (PHOTOL(16))
-  RCONST(727) = (PHOTOL(16))
-  RCONST(728) = (PHOTOL(16))
-  RCONST(729) = (PHOTOL(16))
+  RCONST(726) = (PHOTOL(131))
+  RCONST(727) = (PHOTOL(132))
+  RCONST(728) = (PHOTOL(133))
+  RCONST(729) = (PHOTOL(134))
       
 END SUBROUTINE Update_RCONST
 
@@ -1353,10 +1353,10 @@ SUBROUTINE Update_PHOTO ( )
   RCONST(723) = (PHOTOL(112))
   RCONST(724) = (PHOTOL(113))
   RCONST(725) = (PHOTOL(114))
-  RCONST(726) = (PHOTOL(16))
-  RCONST(727) = (PHOTOL(16))
-  RCONST(728) = (PHOTOL(16))
-  RCONST(729) = (PHOTOL(16))
+  RCONST(726) = (PHOTOL(131))
+  RCONST(727) = (PHOTOL(132))
+  RCONST(728) = (PHOTOL(133))
+  RCONST(729) = (PHOTOL(134))
       
 END SUBROUTINE Update_PHOTO
 
