@@ -980,7 +980,7 @@ CONTAINS
           ENDIF
        ENDIF
 
-       ! "LON_RANGE": Specifies a latitude range for subsetting
+       ! "LAT_RANGE": Specifies a latitude range for subsetting
        ! the data grid. The required order is: latMin, latMax
        Pattern = 'LAT_RANGE'
        Subset  =  UNDEFINED_DBL
