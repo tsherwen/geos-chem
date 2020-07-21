@@ -104,7 +104,8 @@ MODULE UCX_MOD
   ! preprocessed for external grid (hplin, 8/15/18).
   LOGICAL, PARAMETER            :: UCXNETCDF = .FALSE.
 #else
-  LOGICAL, PARAMETER            :: UCXNETCDF = .TRUE.
+!  LOGICAL, PARAMETER            :: UCXNETCDF = .TRUE.
+   LOGICAL, PARAMETER            :: UCXNETCDF = .FALSE.
 #endif
 !
 ! PRIVATE TYPES:
