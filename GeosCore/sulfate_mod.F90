@@ -2373,6 +2373,7 @@ CONTAINS
     INTEGER               :: II,     NSTEP
     INTEGER               :: BULK,   SIZE_RES
     INTEGER               :: IBIN
+    INTEGER               :: id_PSO4
     REAL(fp)              :: K0,     Ki,      KK,     M,    L1
     REAL(fp)              :: L2,     L3,      Ld,     F,    Fc
     REAL(fp)              :: RK,     RKT,     DTCHEM, DT_T, TK
@@ -2391,7 +2392,7 @@ CONTAINS
     REAL(fp)              :: PSO4d_tot, PNITd_tot
     REAL(fp)              :: SO2_gas,   PH2SO4d_tot
     REAL(fp)              :: H2SO4_cd,  H2SO4_gas
-
+    REAL(fp)              :: KPPProd0
     ! (qjc, 04/10/16)
     REAL(fp)              :: L5,L5S,SRo3,SRhobr
     REAL(fp)              :: L5_1,L5S_1,L3_1,L3S_1,KaqO3_1
@@ -2557,6 +2558,7 @@ CONTAINS
     !$OMP PRIVATE( Fe_d_ant, Fe_d_nat                                      ) &
     !$OMP PRIVATE( HCHOCl, KHOCl, f_srhocl, HOCl0, L6, L6S, L6S_1          ) &!XW
     !$OMP PRIVATE( SRhocl, L6_1, SO4H3_vv, SO4H4_vv, fupdateHOCl_0         ) &!xw
+    !$OMP PRIVATE( id_PSO4, KPPProd0                                       ) &!tms
     !$OMP SCHEDULE( DYNAMIC )
     DO L = 1, State_Grid%NZ
     DO J = 1, State_Grid%NY
@@ -2660,23 +2662,32 @@ CONTAINS
        ENDIF
 
        ! Isolate H2SO4 for reaction with dust    tdf 3/6/2K9
+       ! zhaisx 2020.10.16
+       ! Now we change to directly using PSO4 [molec/cm3/s] from KPP
        IF ( LDSTUP ) THEN
+          ! TMS 2020/12/8 - Temporary - manually set the index of PSO4
+          id_PSO4 = 5
           ! Compute gas phase SO4 production again, as in offline case
           ! RK1: SO2 + OH(g) [s-1]  (rjp, bmy, 3/23/03)
           M    = State_Met%AIRDEN(I,J,L) * F
-          KK   = K0 * M / Ki
-          F1   = ( 1.e+0_fp + ( LOG10( KK ) )**2 )**( -1 )
-          RK1  = ( K0 * M / ( 1.e+0_fp + KK ) ) * 0.6e+0_fp**F1 * &
-                   GET_OH( I, J, L, Input_Opt, State_Chm, State_Met)
-          RKT  =  RK1 * DTCHEM  ! [unitless] (bmy, 6/1/00)
-          SO20 = SO2_cd
-          H2SO4_cd = SO20 * ( 1.e+0_fp - EXP( -RKT ) )
+!          KK   = K0 * M / Ki
+!          F1   = ( 1.e+0_fp + ( LOG10( KK ) )**2 )**( -1 )
+!          RK1  = ( K0 * M / ( 1.e+0_fp + KK ) ) * 0.6e+0_fp**F1 * &
+!                   GET_OH( I, J, L, Input_Opt, State_Chm, State_Met)
+!          RKT  =  RK1 * DTCHEM  ! [unitless] (bmy, 6/1/00)
+!          SO20 = SO2_cd
+!          H2SO4_cd = SO20 * ( 1.e+0_fp - EXP( -RKT ) )
+
+          ! Convert State_Diag%Prod from [molec/cm3/s] to [v/v/timestep].
+          KPPProd0 = State_Diag%Prod(I, J, L, id_PSO4)
+          H2SO4_cd = KPPProd0 / M * DTCHEM
 
           !tdf Reset these constants to zero to avoid any problems below
           M   = 0.e+0_fp
-          KK  = 0.e+0_fp
-          F1  = 0.e+0_fp
-          RK1 = 0.e+0_fp
+          KPPProd0 = 0.e+0_fp
+!          KK  = 0.e+0_fp
+!          F1  = 0.e+0_fp
+!          RK1 = 0.e+0_fp
        ENDIF
 
        !==============================================================
