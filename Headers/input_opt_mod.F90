@@ -132,6 +132,10 @@ MODULE Input_Opt_Mod
      LOGICAL                     :: hvAerNIT
      REAL(fp)                    :: hvAerNIT_JNIT
      REAL(fp)                    :: hvAerNIT_JNITs
+     REAL(fp)                    :: hvAerNIT_JNITD1
+     REAL(fp)                    :: hvAerNIT_JNITD2
+     REAL(fp)                    :: hvAerNIT_JNITD3
+     REAL(fp)                    :: hvAerNIT_JNITD4
      REAL(fp)                    :: JNITChanA
      REAL(fp)                    :: JNITChanB
 
@@ -624,6 +628,10 @@ CONTAINS
     Input_Opt%hvAerNIT               = .FALSE.
     Input_Opt%hvAerNIT_JNIT          = 0e+0_fp
     Input_Opt%hvAerNIT_JNITs         = 0e+0_fp
+    Input_Opt%hvAerNIT_JNITD1        = 0e+0_fp
+    Input_Opt%hvAerNIT_JNITD2        = 0e+0_fp
+    Input_Opt%hvAerNIT_JNITD3        = 0e+0_fp
+    Input_Opt%hvAerNIT_JNITD4        = 0e+0_fp
     Input_Opt%JNITChanA              = 0e+0_fp
     Input_Opt%JNITChanB              = 0e+0_fp
 

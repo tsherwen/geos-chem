@@ -1745,6 +1745,38 @@ CONTAINS
     ENDIF
     READ( SUBSTRS(1:N), * ) Input_Opt%hvAerNIT_JNIT
 
+    ! scalar for JHNO3 for photoylsing NITD1 aerosol (TMS, 09/12/20)
+    CALL SPLIT_ONE_LINE( SUBSTRS, N, 1, 'hvAerNIT_JNITD1', RC )
+    IF ( RC /= GC_SUCCESS ) THEN
+       CALL GC_Error( ErrMsg, RC, ThisLoc )
+       RETURN
+    ENDIF
+    READ( SUBSTRS(1:N), * ) Input_Opt%hvAerNIT_JNITD1
+
+    ! scalar for JHNO3 for photoylsing NITD2 aerosol (TMS, 09/12/20)
+    CALL SPLIT_ONE_LINE( SUBSTRS, N, 1, 'hvAerNIT_JNITD2', RC )
+    IF ( RC /= GC_SUCCESS ) THEN
+       CALL GC_Error( ErrMsg, RC, ThisLoc )
+       RETURN
+    ENDIF
+    READ( SUBSTRS(1:N), * ) Input_Opt%hvAerNIT_JNITD2
+
+    ! scalar for JHNO3 for photoylsing NITD3 aerosol (TMS, 09/12/20)
+    CALL SPLIT_ONE_LINE( SUBSTRS, N, 1, 'hvAerNIT_JNITD3', RC )
+    IF ( RC /= GC_SUCCESS ) THEN
+       CALL GC_Error( ErrMsg, RC, ThisLoc )
+       RETURN
+    ENDIF
+    READ( SUBSTRS(1:N), * ) Input_Opt%hvAerNIT_JNITD3
+
+    ! scalar for JHNO3 for photoylsing NITD4 aerosol (TMS, 09/12/20)
+    CALL SPLIT_ONE_LINE( SUBSTRS, N, 1, 'hvAerNIT_JNITD4', RC )
+    IF ( RC /= GC_SUCCESS ) THEN
+       CALL GC_Error( ErrMsg, RC, ThisLoc )
+       RETURN
+    ENDIF
+    READ( SUBSTRS(1:N), * ) Input_Opt%hvAerNIT_JNITD4
+
     ! Fraction for JNITS/NIT channel A (HNO2) for NITs photoylsis (TMS, 10/10/18)
     CALL SPLIT_ONE_LINE( SUBSTRS, N, 1, 'JNITChanA', RC )
     IF ( RC /= GC_SUCCESS ) THEN
@@ -1857,6 +1889,14 @@ CONTAINS
                             Input_Opt%hvAerNIT_JNITs
        WRITE( 6, 105     ) 'JNIT scaling of JHNO3       : ', &
                             Input_Opt%hvAerNIT_JNIT
+       WRITE( 6, 105     ) 'JNITD1 scaling of JHNO3     : ', &
+                            Input_Opt%hvAerNIT_JNITD1
+       WRITE( 6, 105     ) 'JNITD2 scaling of JHNO3     : ', &
+                            Input_Opt%hvAerNIT_JNITD2
+       WRITE( 6, 105     ) 'JNITD3 scaling of JHNO3     : ', &
+                            Input_Opt%hvAerNIT_JNITD3
+       WRITE( 6, 105     ) 'JNITD4 scaling of JHNO3     : ', &
+                            Input_Opt%hvAerNIT_JNITD4
        WRITE( 6, 105     ) 'JNIT(s) channel A (HONO)    : ', &
                             Input_Opt%JNITChanA
        WRITE( 6, 105     ) 'JNIT(s) channel B (NO2)     : ', &

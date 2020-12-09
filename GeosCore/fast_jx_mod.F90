@@ -65,11 +65,19 @@ MODULE FAST_JX_MOD
   INTEGER, PUBLIC :: RXN_H2SO4 = -1   ! SO4 + hv --> SO2 + 2OH
   INTEGER, PUBLIC :: RXN_NO2   = -1   ! NO2 + hv --> NO  + O
 
-  INTEGER, PUBLIC :: RXN_JHNO3  = -1   ! HNO3 + hv --> OH + NO2
-  INTEGER, PUBLIC :: RXN_JNITSa = -1   ! NITs  + hv --> HNO2
-  INTEGER, PUBLIC :: RXN_JNITSb = -1   ! NITs  + hv --> NO2
-  INTEGER, PUBLIC :: RXN_JNITa  = -1   ! NIT + hv --> HNO2
-  INTEGER, PUBLIC :: RXN_JNITb  = -1   ! NIT + hv --> NO2
+  INTEGER, PUBLIC :: RXN_JHNO3    = -1   ! HNO3 + hv --> OH + NO2
+  INTEGER, PUBLIC :: RXN_JNITSa   = -1   ! NITs  + hv --> HNO2
+  INTEGER, PUBLIC :: RXN_JNITSb   = -1   ! NITs  + hv --> NO2
+  INTEGER, PUBLIC :: RXN_JNITa    = -1   ! NIT + hv --> HNO2
+  INTEGER, PUBLIC :: RXN_JNITb    = -1   ! NIT + hv --> NO2
+  INTEGER, PUBLIC :: RXN_JNITD1a  = -1   ! NITD1 + hv --> HNO2
+  INTEGER, PUBLIC :: RXN_JNITD1b  = -1   ! NITD1 + hv --> NO2
+  INTEGER, PUBLIC :: RXN_JNITD2a  = -1   ! NITD2 + hv --> HNO2
+  INTEGER, PUBLIC :: RXN_JNITD2b  = -1   ! NITD2 + hv --> NO2
+  INTEGER, PUBLIC :: RXN_JNITD3a  = -1   ! NITD3 + hv --> HNO2
+  INTEGER, PUBLIC :: RXN_JNITD3b  = -1   ! NITD3 + hv --> NO2
+  INTEGER, PUBLIC :: RXN_JNITD4a  = -1   ! NITD4 + hv --> HNO2
+  INTEGER, PUBLIC :: RXN_JNITD4b  = -1   ! NITD4 + hv --> NO2
 
   ! Needed for UCX_MOD
   INTEGER, PUBLIC :: RXN_NO    = -1
@@ -84,6 +92,7 @@ MODULE FAST_JX_MOD
 
   ! Needed for scaling JNIT/JNITs photolysis to JHNO3
   REAL(fp)      :: JscaleNITs, JscaleNIT, JNITChanA, JNITChanB
+  REAL(fp)      :: JscaleNITD1, JscaleNITD2, JscaleNITD3, JscaleNITD4
 
 #ifdef MODEL_GEOS
   ! Diagnostics arrays (ckeller, 5/22/18)
@@ -191,7 +200,7 @@ CONTAINS
     INTEGER       :: KTOP(State_Grid%NZ)
     INTEGER       :: INDICATOR(State_Grid%NZ+2)
     REAL(fp)      :: FMAX(State_Grid%NZ)    ! maximum cloud fraction
-                                              !  in a block, size can be to 
+                                              !  in a block, size can be to
                                               !  FIX(State_Grid%NZ)+1
     REAL(fp)      :: CLDF1D(State_Grid%NZ)
     REAL(fp)      :: ODNEW(State_Grid%NZ)
@@ -1389,7 +1398,7 @@ CONTAINS
 
        ! fix above top-of-atmos (L=L1U+1), must set DTAU(L1U+1)=0
        AMF2(2*L1U+1,J) = 1.e+0_fp
-       
+
        ! Twilight case - Emergent Beam, calc air mass factors below layer
        if (U0 .ge. 0.0e+0_fp) goto 16
 
@@ -3110,6 +3119,38 @@ CONTAINS
        CASE( 'NITPHOTONNO2' )
           RXN_JNITb = K
 
+       ! NITD1 + hv -> HNO2
+       CASE( 'NITD1PHOTONHNO2' )
+          RXN_JNITD1a = K
+
+       ! NITD1 + hv -> NO2
+       CASE( 'NITD1PHOTONNO2' )
+          RXN_JNITD1b = K
+
+       ! NITD2 + hv -> HNO2
+       CASE( 'NITD2PHOTONHNO2' )
+          RXN_JNITD2a = K
+
+       ! NITD2 + hv -> NO2
+       CASE( 'NITD2PHOTONNO2' )
+          RXN_JNITD2b = K
+
+       ! NITD3 + hv -> HNO2
+       CASE( 'NITD3PHOTONHNO2' )
+          RXN_JNITD3a = K
+
+       ! NITD3 + hv -> NO2
+       CASE( 'NITD3PHOTONNO2' )
+          RXN_JNITD3b = K
+
+       ! NITD4 + hv -> HNO2
+       CASE( 'NITD4PHOTONHNO2' )
+          RXN_JNITD4a = K
+
+       ! NITD4 + hv -> NO2
+       CASE( 'NITD4PHOTONNO2' )
+          RXN_JNITD4b = K
+
        ! HNO3 + hv = OH + NO2
        CASE( 'HNO3PHOTONNO2OH' )
           RXN_JHNO3 = K
@@ -3182,6 +3223,54 @@ CONTAINS
        RETURN
     ENDIF
 
+    IF ( RXN_JNITD1a < 0 ) THEN
+       ErrMsg = 'Could not find rxn NITD1 + hv -> HNO2'
+       CALL GC_Error( ErrMsg, RC, ThisLoc )
+       RETURN
+    ENDIF
+
+    IF ( RXN_JNITD1b < 0 ) THEN
+       ErrMsg = 'Could not find rxn NITD1 + hv -> NO2'
+       CALL GC_Error( ErrMsg, RC, ThisLoc )
+       RETURN
+    ENDIF
+
+    IF ( RXN_JNITD2a < 0 ) THEN
+       ErrMsg = 'Could not find rxn NITD2 + hv -> HNO2'
+       CALL GC_Error( ErrMsg, RC, ThisLoc )
+       RETURN
+    ENDIF
+
+    IF ( RXN_JNITD2b < 0 ) THEN
+       ErrMsg = 'Could not find rxn NITD2 + hv -> NO2'
+       CALL GC_Error( ErrMsg, RC, ThisLoc )
+       RETURN
+    ENDIF
+
+    IF ( RXN_JNITD3a < 0 ) THEN
+       ErrMsg = 'Could not find rxn NITD3 + hv -> HNO2'
+       CALL GC_Error( ErrMsg, RC, ThisLoc )
+       RETURN
+    ENDIF
+
+    IF ( RXN_JNITD3b < 0 ) THEN
+       ErrMsg = 'Could not find rxn NITD3 + hv -> NO2'
+       CALL GC_Error( ErrMsg, RC, ThisLoc )
+       RETURN
+    ENDIF
+
+    IF ( RXN_JNITD4a < 0 ) THEN
+       ErrMsg = 'Could not find rxn NITD4 + hv -> HNO2'
+       CALL GC_Error( ErrMsg, RC, ThisLoc )
+       RETURN
+    ENDIF
+
+    IF ( RXN_JNITD4b < 0 ) THEN
+       ErrMsg = 'Could not find rxn NITD4 + hv -> NO2'
+       CALL GC_Error( ErrMsg, RC, ThisLoc )
+       RETURN
+    ENDIF
+
     !---------------------------------------------------------------------
     ! These reactions are only defined for the UCX mechanism!
     !---------------------------------------------------------------------
@@ -3227,6 +3316,14 @@ CONTAINS
        WRITE( 6, 190 ) RXN_JNITSb
        WRITE( 6, 200 ) RXN_JNITa
        WRITE( 6, 210 ) RXN_JNITb
+       WRITE( 6, 220 ) RXN_JNITD1a
+       WRITE( 6, 230 ) RXN_JNITD1b
+       WRITE( 6, 240 ) RXN_JNITD2a
+       WRITE( 6, 250 ) RXN_JNITD2b
+       WRITE( 6, 260 ) RXN_JNITD3a
+       WRITE( 6, 270 ) RXN_JNITD3b
+       WRITE( 6, 280 ) RXN_JNITD4a
+       WRITE( 6, 290 ) RXN_JNITD4b
        IF ( Input_Opt%LUCX ) THEN
           WRITE( 6, 160 ) RXN_H2SO4
        ENDIF
@@ -3247,6 +3344,14 @@ CONTAINS
 190 FORMAT( 'RXN_JNITSb [ NITS + hv -> NO2         ]  =  ', i5 )
 200 FORMAT( 'RXN_JNITa  [ NIT + hv -> HNO2         ]  =  ', i5 )
 210 FORMAT( 'RXN_JNITb  [ NIT + hv -> NO2          ]  =  ', i5 )
+220 FORMAT( 'RXN_JNITD1a  [ NITD1 + hv -> HNO2     ]  =  ', i5 )
+230 FORMAT( 'RXN_JNITD1b  [ NITD1 + hv -> NO2      ]  =  ', i5 )
+240 FORMAT( 'RXN_JNITD2a  [ NITD2 + hv -> HNO2     ]  =  ', i5 )
+250 FORMAT( 'RXN_JNITD2b  [ NITD2 + hv -> NO2      ]  =  ', i5 )
+260 FORMAT( 'RXN_JNITD3a  [ NITD3 + hv -> HNO2     ]  =  ', i5 )
+270 FORMAT( 'RXN_JNITD3b  [ NITD4 + hv -> NO2      ]  =  ', i5 )
+280 FORMAT( 'RXN_JNITD4a  [ NITD4 + hv -> HNO2     ]  =  ', i5 )
+290 FORMAT( 'RXN_JNITD4b  [ NITD4 + hv -> NO2      ]  =  ', i5 )
 
   END SUBROUTINE RD_JS_JX
 !EOC
@@ -4271,7 +4376,7 @@ CONTAINS
 
        ! at this point FTAU2(1:L2_+1) and POMEAGJ(1:8, 1:L2_+1)
        !     where FTAU2(L2_+1) = 1.0 = top-of-atmos, FTAU2(1) = surface
-       
+
        do L2 = 1,L2U+1          ! L2 = index of CTM edge- and mid-layers
           L2L = L2LEV(L2)        ! L2L = index for L2 in expanded scale(JADD)
           LZ  = ND + 2 - 2*L2L  ! LZ = index for L2 in scatt arrays
@@ -5173,6 +5278,10 @@ CONTAINS
        ! Get the photolysis scalars read in from input.geos
        JscaleNITs = Input_Opt%hvAerNIT_JNITs
        JscaleNIT  = Input_Opt%hvAerNIT_JNIT
+       JscaleNITD1  = Input_Opt%hvAerNIT_JNITD1
+       JscaleNITD2  = Input_Opt%hvAerNIT_JNITD2
+       JscaleNITD3  = Input_Opt%hvAerNIT_JNITD3
+       JscaleNITD4  = Input_Opt%hvAerNIT_JNITD4
        ! convert reaction channel % to a fraction
        JNITChanA  = Input_Opt%JNITChanA
        JNITChanB  = Input_Opt%JNITChanB
@@ -5184,12 +5293,30 @@ CONTAINS
        ! Set the photolysis rate of NIT
        ZPJ(L,RXN_JNITa,I,J) = ZPJ(L,RXN_JHNO3,I,J) * JscaleNIT
        ZPJ(L,RXN_JNITb,I,J) = ZPJ(L,RXN_JHNO3,I,J) * JscaleNIT
+       ! Set the photolysis rate of NITD1-4
+       ZPJ(L,RXN_JNITD1a,I,J) = ZPJ(L,RXN_JHNO3,I,J) * JscaleNIT
+       ZPJ(L,RXN_JNITD1b,I,J) = ZPJ(L,RXN_JHNO3,I,J) * JscaleNIT
+       ZPJ(L,RXN_JNITD2a,I,J) = ZPJ(L,RXN_JHNO3,I,J) * JscaleNIT
+       ZPJ(L,RXN_JNITD2b,I,J) = ZPJ(L,RXN_JHNO3,I,J) * JscaleNIT
+       ZPJ(L,RXN_JNITD3a,I,J) = ZPJ(L,RXN_JHNO3,I,J) * JscaleNIT
+       ZPJ(L,RXN_JNITD3b,I,J) = ZPJ(L,RXN_JHNO3,I,J) * JscaleNIT
+       ZPJ(L,RXN_JNITD4a,I,J) = ZPJ(L,RXN_JHNO3,I,J) * JscaleNIT
+       ZPJ(L,RXN_JNITD4b,I,J) = ZPJ(L,RXN_JHNO3,I,J) * JscaleNIT
        ! Adjust to scaling for channels set in input.geos
        ! NOTE: channel scaling is 1 in FJX_j2j.dat, then updated here
        ZPJ(L,RXN_JNITSa,I,J) = ZPJ(L,RXN_JNITSa,I,J) * JNITChanA
        ZPJ(L,RXN_JNITa,I,J) = ZPJ(L,RXN_JNITa,I,J) * JNITChanA
        ZPJ(L,RXN_JNITSb,I,J) = ZPJ(L,RXN_JNITSb,I,J) * JNITChanB
        ZPJ(L,RXN_JNITb,I,J) = ZPJ(L,RXN_JNITb,I,J) * JNITChanB
+       ! Also do this for JNITD1-4
+       ZPJ(L,RXN_JNITD1a,I,J) = ZPJ(L,RXN_JNITD1a,I,J) * JNITChanA
+       ZPJ(L,RXN_JNITD2a,I,J) = ZPJ(L,RXN_JNITD2a,I,J) * JNITChanA
+       ZPJ(L,RXN_JNITD3a,I,J) = ZPJ(L,RXN_JNITD3a,I,J) * JNITChanA
+       ZPJ(L,RXN_JNITD4a,I,J) = ZPJ(L,RXN_JNITD4a,I,J) * JNITChanA
+       ZPJ(L,RXN_JNITD1b,I,J) = ZPJ(L,RXN_JNITD1b,I,J) * JNITChanB
+       ZPJ(L,RXN_JNITD2b,I,J) = ZPJ(L,RXN_JNITD2b,I,J) * JNITChanB
+       ZPJ(L,RXN_JNITD3b,I,J) = ZPJ(L,RXN_JNITD3b,I,J) * JNITChanB
+       ZPJ(L,RXN_JNITD4b,I,J) = ZPJ(L,RXN_JNITD4b,I,J) * JNITChanB
 
     ! Gotcha to set JNIT and JNITs to zero if hvAerNIT switch is off
     ELSE
@@ -5200,6 +5327,15 @@ CONTAINS
        ! Set the photolysis rate of NIT to zero
        ZPJ(L,RXN_JNITa,I,J) = 0.0_fp
        ZPJ(L,RXN_JNITb,I,J) = 0.0_fp
+       ! Set the photolysis rate of NITD1-4 to zero
+       ZPJ(L,RXN_JNITD1a,I,J) = 0.0_fp
+       ZPJ(L,RXN_JNITD2a,I,J) = 0.0_fp
+       ZPJ(L,RXN_JNITD3a,I,J) = 0.0_fp
+       ZPJ(L,RXN_JNITD4a,I,J) = 0.0_fp
+       ZPJ(L,RXN_JNITD1b,I,J) = 0.0_fp
+       ZPJ(L,RXN_JNITD2b,I,J) = 0.0_fp
+       ZPJ(L,RXN_JNITD3b,I,J) = 0.0_fp
+       ZPJ(L,RXN_JNITD4b,I,J) = 0.0_fp
 
     ENDIF
 
