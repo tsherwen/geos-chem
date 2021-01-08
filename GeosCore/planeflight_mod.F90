@@ -1673,10 +1673,11 @@ CONTAINS
                 WRITE( 6, '(a)') 'PLANEFLIGHT (planeflight_mod.F90)'
                 WRITE( 6, '(a)') REPEAT( '=', 79 )
              ENDIF
-             CALL GEOS_CHEM_STOP
+!!             CALL GEOS_CHEM_STOP
 
              ! Force L=1
-             L = 1
+!             L = 1
+             WRITE( 6, '(a)') 'TMS 20/01/07 - L=1 forcing remove d'
 
           ENDIF
 
