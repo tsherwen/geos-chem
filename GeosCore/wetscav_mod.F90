@@ -4401,6 +4401,12 @@ CONTAINS
        !--------------------------------------------------------------------
        ! Error checks
        !--------------------------------------------------------------------
+       ! Employ Lyssa Freese's fix for the re-suspension error in v12.9
+       ! Details: https://github.com/geoschem/geos-chem/issues/501
+       IF ( Spc(I,J,L,N) < 0e+0_fp ) THEN
+          Spc(I,J,L,N) = 0e+0_fp
+       ENDIF 
+
        IF ( IT_IS_NAN( Spc(I,J,L,N) )   .or.                                 &
             Spc(I,J,L,N)   < 0e+0_fp    .or.                                 &
             DSpc(NW,L,I,J) < 0e+0_fp  ) THEN
