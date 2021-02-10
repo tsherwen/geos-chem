@@ -781,9 +781,8 @@ CONTAINS
            JPREAC(R) = -999
            P         = -999         ! GEOS-Chem photolyis species ID
 
-           !
+           ! Loop the reaciton branches and find the correct "P" index
            DO IK = 1, JVN_
-               WRITE(*,*) 'TMS debug 5.0:', NUM, IK, ( IK == NUM )
 
                ! GC photolysis species index
                P = GC_Photo_Id(NUM)
@@ -2132,7 +2131,7 @@ CONTAINS
              !!--------------------------
              !! Reaction rates
              !!--------------------------
-             !CASE ( 10000:99999 )
+             !CASE ( 10000:30000 )
              !
              !   ! Increment reaction count
              !   R = R + 1
@@ -2152,6 +2151,7 @@ CONTAINS
                NUM = JPREAC(R) - 30000
 
                ! Extract this reaction number from the state diag
+               ! NOTE: JValues collection must have been requested in HISTORY.rc
                VARI(V) = State_Diag%JVal(I,J,L, NUM )
 
              !--------------------------
@@ -2376,6 +2376,8 @@ CONTAINS
             ( PPRESS(IND) .GT. State_Met%PEDGE(II,JJ,L+1) ) ) LL = L
     ENDDO
     IF (LL .EQ. 0) LL = State_Grid%NZ
+
+    WRITE(*,*) 'TMS DEBUG 5.0 - about to write PF data'
 
     ! Write data to file
     WRITE( IU_PLANE, 110, IOSTAT=IOS )                            &
